@@ -21,34 +21,31 @@ using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property;
 namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
 {
     /// <summary>
-    /// Serializer <see cref="LogEventPropertyValue"/> text to <see cref="TelemetryProperty"/> implementations
+    /// Deserialize to a <see cref="TelemetryProperty"/> implementations
     /// </summary>
     public class TelemetryPropertyDeserializer
     {
         /// <summary>
-        /// Deserialize the given <paramref name="input"/> to a <see cref="TelemetryProperty"/> implementation.
+        /// Deserialize the given <paramref name="logEventProperty"/> to a <see cref="TelemetryProperty"/> implementation.
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="logEventProperty"></param>
         /// <returns></returns>
-        public TelemetryProperty Deserialize(string input)
+        public TelemetryProperty Deserialize(LogEventPropertyValue logEventProperty)
         {
-            object telemetryObject = TryParseTelemetryFrom(input);
+            string telemetryJson = TrimLogEventPropertyValue(logEventProperty);
+            object telemetryObject = TryParseToObject(telemetryJson);
             if (telemetryObject == null) return null;
 
-            var telemetryJObject = telemetryObject as JObject;
-            JToken telemetryTypeTag = null;
-            telemetryJObject?.TryGetValue(TelemetryProperty.Key, out telemetryTypeTag);
-
-            if (telemetryTypeTag == null)
-            {
-                return null;
-            }
-
-            Type telemetryType = Type.GetType(telemetryTypeTag.ToString());
-            return JsonConvert.DeserializeObject(input, telemetryType) as TelemetryProperty;
+            JToken telemetryTypeTag = SelectTelemetryType(telemetryObject);
+            return telemetryTypeTag == null ? null : DeserializeToSpecificTelemetryType(telemetryJson, telemetryTypeTag);
         }
 
-        private static object TryParseTelemetryFrom(string input)
+        private static string TrimLogEventPropertyValue(LogEventPropertyValue logEventProperty)
+        {
+            return logEventProperty.ToString().Replace("\\\"", "\"").Trim('\"');
+        }
+
+        private static object TryParseToObject(string input)
         {
             try
             {
@@ -58,6 +55,22 @@ namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
             {
                 return null;
             }
+        }
+
+        private static JToken SelectTelemetryType(object telemetryObject)
+        {
+            var telemetryJObject = telemetryObject as JObject;
+
+            JToken telemetryTypeTag = null;
+            telemetryJObject?.TryGetValue(TelemetryProperty.Key, out telemetryTypeTag);
+
+            return telemetryTypeTag;
+        }
+
+        private static TelemetryProperty DeserializeToSpecificTelemetryType(string input, JToken telemetryTypeTag)
+        {
+            Type telemetryType = Type.GetType(telemetryTypeTag.ToString());
+            return JsonConvert.DeserializeObject(input, telemetryType) as TelemetryProperty;
         }
     }
 }

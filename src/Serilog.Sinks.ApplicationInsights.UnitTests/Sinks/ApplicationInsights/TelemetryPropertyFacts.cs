@@ -1,5 +1,4 @@
 ﻿using System;
-using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights;
 using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property;
 using Xunit;
 

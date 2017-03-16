@@ -1,6 +1,5 @@
 ﻿using System;
 using Serilog.Core;
-using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights;
 using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property;
 using Serilog.Sinks.ApplicationInsights.UnitTests.references;
 using Serilog.Sinks.ApplicationInsights.UnitTests.Sinks.ApplicationInsights;
