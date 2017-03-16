@@ -15,33 +15,29 @@
 using System;
 using Microsoft.ApplicationInsights.DataContracts;
 
-namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
+namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property
 {
     /// <summary>
-    /// <see cref="TelemetryProperty"/> implementation to define the 'TrackDependency' method.
+    /// <see cref="TelemetryProperty" /> implementation to define the 'TrackRequest' method.    
     /// </summary>
-    public class DependencyProperty : TelemetryProperty
+    public class RequestProperty : TelemetryProperty
     {
-        public string DependencyName { get; set; }
+        public string Name { get; set; }
 
-        public string DependencyCall { get; set; }
+        public DateTimeOffset StartTime { get; set; }
 
-        public DateTime StartTime { get; set; }
+        public TimeSpan Duration { get; set; }
 
-        public TimeSpan EnlapsedTime { get; set; }
+        public string ResponseCode { get; set; }
 
         public bool Success { get; set; }
 
         /// <summary>
         /// Custom implementation of the <see cref="ISupportProperties"/>.
         /// </summary>
-        public override ISupportProperties GetTelemetry() => new DependencyTelemetry
+        public override ISupportProperties GetTelemetry()
         {
-            DependencyTypeName = DependencyName,
-            CommandName = DependencyCall,
-            Timestamp = StartTime,
-            Duration = EnlapsedTime,
-            Success = Success,
-        };
+            return new RequestTelemetry(Name, StartTime, Duration, ResponseCode, Success);
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using Serilog.Core;
 using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights;
+using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property;
 using Serilog.Sinks.ApplicationInsights.UnitTests.references;
+using Serilog.Sinks.ApplicationInsights.UnitTests.Sinks.ApplicationInsights;
 using Xunit;
 
 namespace Serilog.Sinks.ApplicationInsights.UnitTests.Sinks
@@ -30,36 +32,11 @@ namespace Serilog.Sinks.ApplicationInsights.UnitTests.Sinks
                 .CreateLogger();
         }
 
-        [Fact]
-        public void ThenDependencyIsLogged()
+        [Theory]
+        [ClassData(typeof(TelemetryPropertySource))]
+        public void ThenTelemetryPropertyIsLogged(TelemetryProperty property, Type telemetryType)
         {
-           _logger.Information("My custom message with dependency {mydependency}", new DependencyProperty
-            {
-                DependencyCall = "call",
-                EnlapsedTime = TimeSpan.FromDays(1),
-                StartTime = DateTime.UtcNow,
-                DependencyName = "my dependency",
-                Success = false
-            });
-        }
-
-        [Fact]
-        public void ThenMetricIsLogged()
-        {
-            _logger.Debug("My custom message with metric {mymetric}", new MetricProperty
-            {
-                MetricName = "my metric",
-                MetricValue = 10
-            });
-        }
-
-        [Fact]
-        public void ThenEventIsLogged()
-        {
-            _logger.Fatal("My custom message with event {myevent}", new EventProperty
-            {
-                Name = "my event"
-            });
+            _logger.Information("My custom message with the Telemetry {mytelemetry}", property);
         }
 
         [Fact]
@@ -74,6 +51,6 @@ namespace Serilog.Sinks.ApplicationInsights.UnitTests.Sinks
             _logger.Warning("This messages is skipped {unknown}", new Unknown());
         }
 
-        private class Unknown { }
+        private class Unknown {}
     }
 }

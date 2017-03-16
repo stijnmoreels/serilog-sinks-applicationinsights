@@ -16,7 +16,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
+namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property
 {
     /// <summary>
     /// Abstract contract to define a Log Property for the Telemetry.

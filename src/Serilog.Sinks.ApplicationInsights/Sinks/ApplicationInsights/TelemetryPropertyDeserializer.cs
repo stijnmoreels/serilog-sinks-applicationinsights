@@ -16,6 +16,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog.Events;
+using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property;
 
 namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
 {

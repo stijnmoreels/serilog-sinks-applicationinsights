@@ -14,23 +14,18 @@
 
 using Microsoft.ApplicationInsights.DataContracts;
 
-namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
+namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property
 {
     /// <summary>
-    /// <see cref="TelemetryProperty"/> implementation to define the 'TrackMetric' method.
+    /// <see cref="TelemetryProperty"/> implementation to define the 'TrackEvent' method.
     /// </summary>
-    public class MetricProperty : TelemetryProperty
+    public class EventProperty : TelemetryProperty
     {
-        public string MetricName { get; set; }
-
-        public int MetricValue { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Custom implementation of the <see cref="ISupportProperties"/>.
         /// </summary>
-        public override ISupportProperties GetTelemetry()
-        {
-            return new MetricTelemetry(MetricName, MetricValue);
-        }
+        public override ISupportProperties GetTelemetry() => new EventTelemetry(Name);
     }
 }

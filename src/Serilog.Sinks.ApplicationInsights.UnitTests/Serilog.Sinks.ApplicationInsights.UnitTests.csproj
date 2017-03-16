@@ -77,9 +77,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="references\ApplicationInsightsReference.cs" />
-    <Compile Include="Sinks\ApplicationInsights\DynamicApplicationInsightsSinkFacts.cs" />
-    <Compile Include="Sinks\ApplicationInsights\MetricPropertyFacts.cs" />
+    <Compile Include="Sinks\ApplicationInsights\TelemetryPropertyFacts.cs" />
     <Compile Include="Sinks\ApplicationInsights\TelemetryPropertySerializerFacts.cs" />
+    <Compile Include="Sinks\ApplicationInsights\TelemetryPropertySource.cs" />
     <Compile Include="Sinks\LoggerConfigurationApplicationInsightsExtensionsFacts.cs" />
   </ItemGroup>
   <ItemGroup>

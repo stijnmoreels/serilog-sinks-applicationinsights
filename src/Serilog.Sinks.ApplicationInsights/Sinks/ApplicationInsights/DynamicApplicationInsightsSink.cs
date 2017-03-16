@@ -5,6 +5,7 @@ using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Serilog.Events;
 using Serilog.ExtensionMethods;
+using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property;
 
 namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
 {
