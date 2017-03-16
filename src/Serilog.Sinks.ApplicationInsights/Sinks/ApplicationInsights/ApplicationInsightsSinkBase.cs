@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading;
@@ -22,6 +23,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Serilog.Core;
 using Serilog.Events;
 
+// ReSharper disable once CheckNamespace
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -35,7 +37,7 @@ namespace Serilog.Sinks.ApplicationInsights
 
         private readonly TelemetryClient _telemetryClient;
         private readonly IFormatProvider _formatProvider;
-        private readonly Func<LogEvent, IFormatProvider, ITelemetry> _logEventToTelemetryConverter;
+        private readonly Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> _logEventToTelemetryConverter;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is being disposed.
@@ -95,7 +97,7 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <value>
         /// The log event to telemetry converter.
         /// </value>
-        protected Func<LogEvent, IFormatProvider, ITelemetry> LogEventToTelemetryConverter
+        protected Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> LogEventToTelemetryConverter
         {
             get
             {
@@ -127,11 +129,11 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <exception cref="ArgumentNullException"><paramref name="telemetryClient" /> cannot be null</exception>
         protected ApplicationInsightsSinkBase(
             TelemetryClient telemetryClient,
-            Func<LogEvent, IFormatProvider, ITelemetry> logEventToTelemetryConverter,
+            Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter,
             IFormatProvider formatProvider = null)
         {
-            if (telemetryClient == null) throw new ArgumentNullException("telemetryClient");
-            if (logEventToTelemetryConverter == null) throw new ArgumentNullException("logEventToTelemetryConverter");
+            if (telemetryClient == null) throw new ArgumentNullException(nameof(telemetryClient));
+            if (logEventToTelemetryConverter == null) throw new ArgumentNullException(nameof(logEventToTelemetryConverter));
 
             _telemetryClient = telemetryClient;
             _formatProvider = formatProvider;
@@ -147,7 +149,7 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <exception cref="System.ArgumentNullException">telemetry</exception>
         protected virtual void TrackTelemetry(ITelemetry telemetry)
         {
-            if (telemetry == null) throw new ArgumentNullException("telemetry");
+            if (telemetry == null) throw new ArgumentNullException(nameof(telemetry));
 
             CheckForAndThrowIfDisposed();
 
@@ -168,17 +170,20 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <exception cref="TargetInvocationException">A delegate callback throws an exception.</exception>
         public virtual void Emit(LogEvent logEvent)
         {
-            if (logEvent == null) throw new ArgumentNullException("logEvent");
+            if (logEvent == null) throw new ArgumentNullException(nameof(logEvent));
 
             CheckForAndThrowIfDisposed();
 
             try
             {
-                var telemetry = LogEventToTelemetryConverter.Invoke(logEvent, FormatProvider);
+                IEnumerable<ITelemetry> telemetries = LogEventToTelemetryConverter.Invoke(logEvent, FormatProvider);
+                if (telemetries == null) return;
 
-                // if 'null' is returned (& we therefore there's nothing to track), the logEvent is basically skipped
-                if (telemetry != null)
+                foreach (ITelemetry telemetry in telemetries)
                 {
+                    // if 'null' is returned (& we therefore there's nothing to track), the logEvent is basically skipped
+                    if (telemetry == null) return;
+
                     TrackTelemetry(telemetry);
                 }
             }
@@ -235,14 +240,9 @@ namespace Serilog.Sinks.ApplicationInsights
                 IsDisposing = true;
 
                 // we only have managed resources to dispose of
-                if (disposeManagedResources)
-                {
-                    // free managed resources
-                    if (TelemetryClient != null)
-                    {
-                        TelemetryClient.Flush();
-                    }
-                }
+                if (!disposeManagedResources) return;
+                // free managed resources
+                TelemetryClient?.Flush();
 
                 // no unmanaged resources are to be disposed
             }

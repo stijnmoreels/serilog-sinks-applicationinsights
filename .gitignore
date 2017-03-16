@@ -181,3 +181,7 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+**/references/ApplicationInsights.config
+**/applicationhost.config
+**/restore.dg

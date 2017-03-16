@@ -1,7 +1,7 @@
-﻿{
+{
   "version": "2.2.1-*",
   "description": "Serilog event sink that writes Microsoft Application Insights.",
-  "authors": [ "Joerg Battermann" ],
+  "authors": [ "Joerg Battermann", "Stijn Moreels" ],
   "packOptions": {
     "tags": [ "serilog", "logging", "azure", "applicationinsights", "application", "insights" ],
     "projectUrl": "https://github.com/serilog/serilog-sinks-applicationinsights",
@@ -9,6 +9,7 @@
     "iconUrl": "http://serilog.net/images/serilog-sink-nuget.png"
   },
   "dependencies": {
+    "Newtonsoft.Json": "9.0.1",
     "Serilog": "2.0.0"
   },
   "frameworks": {
@@ -29,6 +30,7 @@
     },
     "netstandard1.6": {
       "dependencies": {
+        "Microsoft.ApplicationInsights": "2.2.0",
         "Microsoft.ApplicationInsights.AspNetCore": "2.0.0"
       }
     }

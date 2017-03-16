@@ -4,6 +4,7 @@ using System.Globalization;
 using Serilog.Debugging;
 using Serilog.Events;
 
+// ReSharper disable once CheckNamespace
 namespace Serilog.Sinks.ApplicationInsights
 {
     internal static class ApplicationInsightsPropertyFormatter

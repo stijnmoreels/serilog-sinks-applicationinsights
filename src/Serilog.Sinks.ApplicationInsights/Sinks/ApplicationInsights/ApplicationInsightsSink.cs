@@ -14,10 +14,12 @@
 
 
 using System;
+using System.Collections.Generic;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Serilog.Events;
 
+// ReSharper disable once CheckNamespace
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -35,12 +37,12 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <exception cref="ArgumentNullException"><paramref name="logEventToTelemetryConverter" /> is <see langword="null" />.</exception>
         public ApplicationInsightsSink(
             TelemetryClient telemetryClient,
-            Func<LogEvent, IFormatProvider, ITelemetry> logEventToTelemetryConverter,
+            Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter,
             IFormatProvider formatProvider = null)
             : base(telemetryClient, logEventToTelemetryConverter, formatProvider)
         {
-            if (telemetryClient == null) throw new ArgumentNullException("telemetryClient");
-            if (logEventToTelemetryConverter == null) throw new ArgumentNullException("logEventToTelemetryConverter");
+            if (telemetryClient == null) throw new ArgumentNullException(nameof(telemetryClient));
+            if (logEventToTelemetryConverter == null) throw new ArgumentNullException(nameof(logEventToTelemetryConverter));
         }
     }
 }

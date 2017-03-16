@@ -15,6 +15,7 @@
 using Microsoft.ApplicationInsights.DataContracts;
 using Serilog.Events;
 
+// ReSharper disable once CheckNamespace
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>

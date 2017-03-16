@@ -13,12 +13,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Serilog.Events;
 using Serilog.ExtensionMethods;
 
+// ReSharper disable once CheckNamespace
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -37,11 +39,11 @@ namespace Serilog.Sinks.ApplicationInsights
         public ApplicationInsightsTracesSink(
             TelemetryClient telemetryClient,
             IFormatProvider formatProvider = null,
-            Func<LogEvent, IFormatProvider, ITelemetry> logEventToTelemetryConverter = null)
+            Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter = null)
             : base(telemetryClient, logEventToTelemetryConverter ?? DefaultLogEventToTraceTelemetryConverter, formatProvider)
         {
             if (telemetryClient == null)
-                throw new ArgumentNullException("telemetryClient");
+                throw new ArgumentNullException(nameof(telemetryClient));
         }
 
         /// <summary>
@@ -52,19 +54,16 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">logEvent</exception>
         /// <exception cref="ArgumentNullException"><paramref name="logEvent" /> is <see langword="null" />.</exception>
-        private static ITelemetry DefaultLogEventToTraceTelemetryConverter(LogEvent logEvent, IFormatProvider formatProvider)
+        private static IEnumerable<ITelemetry> DefaultLogEventToTraceTelemetryConverter(LogEvent logEvent, IFormatProvider formatProvider)
         {
             if (logEvent == null)
-                throw new ArgumentNullException("logEvent");
+                throw new ArgumentNullException(nameof(logEvent));
 
             if (logEvent.Exception == null)
             {
-                return logEvent.ToDefaultTraceTelemetry(formatProvider);
+                yield return logEvent.ToDefaultTraceTelemetry(formatProvider);
             }
-            else
-            {
-                return logEvent.ToDefaultExceptionTelemetry(formatProvider);
-            }
+            yield return logEvent.ToDefaultExceptionTelemetry(formatProvider);
         }
     }
 }

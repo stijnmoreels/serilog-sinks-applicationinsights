@@ -16,6 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E9D1B5
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Serilog.Sinks.ApplicationInsights", "src\Serilog.Sinks.ApplicationInsights\Serilog.Sinks.ApplicationInsights.xproj", "{B572E129-3568-435F-A8E9-366AD7014D8E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_tests", "_tests", "{B2ED1FFA-5228-4FCF-8F6D-1C2E9564252C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.ApplicationInsights.UnitTests", "src\Serilog.Sinks.ApplicationInsights.UnitTests\Serilog.Sinks.ApplicationInsights.UnitTests.csproj", "{3B169C5F-BD6E-4ACA-815C-E3DAFD7020A8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B572E129-3568-435F-A8E9-366AD7014D8E} = {B572E129-3568-435F-A8E9-366AD7014D8E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,11 +33,16 @@ Global
 		{B572E129-3568-435F-A8E9-366AD7014D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B572E129-3568-435F-A8E9-366AD7014D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B572E129-3568-435F-A8E9-366AD7014D8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B169C5F-BD6E-4ACA-815C-E3DAFD7020A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B169C5F-BD6E-4ACA-815C-E3DAFD7020A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B169C5F-BD6E-4ACA-815C-E3DAFD7020A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B169C5F-BD6E-4ACA-815C-E3DAFD7020A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B572E129-3568-435F-A8E9-366AD7014D8E} = {037440DE-440B-4129-9F7A-09B42D00397E}
+		{3B169C5F-BD6E-4ACA-815C-E3DAFD7020A8} = {B2ED1FFA-5228-4FCF-8F6D-1C2E9564252C}
 	EndGlobalSection
 EndGlobal
