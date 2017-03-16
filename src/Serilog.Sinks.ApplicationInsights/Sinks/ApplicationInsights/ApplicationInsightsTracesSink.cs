@@ -21,6 +21,7 @@ using Serilog.Events;
 using Serilog.ExtensionMethods;
 
 // ReSharper disable once CheckNamespace
+
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>

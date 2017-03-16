@@ -19,11 +19,11 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ApplicationInsights.DataContracts;
 using Serilog.Core;
 using Serilog.Events;
 
 // ReSharper disable once CheckNamespace
+
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -32,8 +32,8 @@ namespace Serilog.Sinks.ApplicationInsights
     /// </summary>
     public abstract class ApplicationInsightsSinkBase : ILogEventSink, IDisposable
     {
-        private long _isDisposing = 0;
-        private long _isDisposed = 0;
+        private long _isDisposing;
+        private long _isDisposed;
 
         private readonly TelemetryClient _telemetryClient;
         private readonly IFormatProvider _formatProvider;
@@ -47,14 +47,8 @@ namespace Serilog.Sinks.ApplicationInsights
         /// </value>
         public bool IsDisposing
         {
-            get
-            {
-                return Interlocked.Read(ref _isDisposing) == 1;
-            }
-            protected set
-            {
-                Interlocked.Exchange(ref _isDisposing, value ? 1 : 0);
-            }
+            get { return Interlocked.Read(ref _isDisposing) == 1; }
+            protected set { Interlocked.Exchange(ref _isDisposing, value ? 1 : 0); }
         }
 
         /// <summary>
@@ -65,14 +59,8 @@ namespace Serilog.Sinks.ApplicationInsights
         /// </value>
         public bool IsDisposed
         {
-            get
-            {
-                return Interlocked.Read(ref _isDisposed) == 1;
-            }
-            protected set
-            {
-                Interlocked.Exchange(ref _isDisposed, value ? 1 : 0);
-            }
+            get { return Interlocked.Read(ref _isDisposed) == 1; }
+            protected set { Interlocked.Exchange(ref _isDisposed, value ? 1 : 0); }
         }
 
         /// <summary>

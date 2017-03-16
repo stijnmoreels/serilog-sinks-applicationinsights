@@ -20,6 +20,7 @@ using Microsoft.ApplicationInsights.Channel;
 using Serilog.Events;
 
 // ReSharper disable once CheckNamespace
+
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
