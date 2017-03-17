@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------// Copyright 2016 Serilog Contributors
+﻿// Copyright 2016 Serilog Contributors
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ using Serilog.Events;
 using Serilog.Sinks.ApplicationInsights;
 
 // ReSharper disable once CheckNamespace
-
 namespace Serilog.ExtensionMethods
 {
     /// <summary>
@@ -57,12 +56,13 @@ namespace Serilog.ExtensionMethods
         /// <param name="includeMessageTemplate">if set to <c>true</c> the <see cref="LogEvent.MessageTemplate"/> is added to the
         /// <paramref name="telemetryProperties"/> using the <see cref="TelemetryPropertiesMessageTemplate"/> key.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="logEvent" /> or <paramref name="telemetryProperties" /> is null.</exception>
-        public static void ForwardPropertiesToTelemetryProperties(this LogEvent logEvent,
-                                                                  ISupportProperties telemetryProperties,
-                                                                  IFormatProvider formatProvider,
-                                                                  bool includeLogLevel = true,
-                                                                  bool includeRenderedMessage = true,
-                                                                  bool includeMessageTemplate = true)
+        public static void ForwardPropertiesToTelemetryProperties(
+            this LogEvent logEvent,
+            ISupportProperties telemetryProperties,
+            IFormatProvider formatProvider,
+            bool includeLogLevel = true,
+            bool includeRenderedMessage = true,
+            bool includeMessageTemplate = true)
         {
             if (logEvent == null) throw new ArgumentNullException(nameof(logEvent));
             if (telemetryProperties == null) throw new ArgumentNullException(nameof(telemetryProperties));
@@ -82,8 +82,7 @@ namespace Serilog.ExtensionMethods
                 telemetryProperties.Properties.Add(TelemetryPropertiesMessageTemplate, logEvent.MessageTemplate.Text);
             }
 
-            foreach (
-                var property in
+            foreach (var property in
                 logEvent.Properties.Where(property => property.Value != null && !telemetryProperties.Properties.ContainsKey(property.Key)))
             {
                 ApplicationInsightsPropertyFormatter.WriteValue(property.Key, property.Value, telemetryProperties.Properties);
@@ -115,13 +114,13 @@ namespace Serilog.ExtensionMethods
             if (logEvent.Exception == null) throw new ArgumentException("Must have an Exception", nameof(logEvent));
 
             var exceptionTelemetry = new ExceptionTelemetry(logEvent.Exception)
-            {
-                SeverityLevel = logEvent.Level.ToSeverityLevel(),
+                                         {
+                                             SeverityLevel = logEvent.Level.ToSeverityLevel(),
 #if EXCEPTION_TELEMETRY_HANDLED_AT
-                HandledAt = ExceptionHandledAt.UserCode,
+                                             HandledAt = ExceptionHandledAt.UserCode,
 #endif
-                Timestamp = logEvent.Timestamp
-            };
+                                             Timestamp = logEvent.Timestamp
+                                         };
 
             // write logEvent's .Properties to the AI one
             logEvent.ForwardPropertiesToTelemetryProperties(
@@ -156,14 +155,15 @@ namespace Serilog.ExtensionMethods
         {
             if (logEvent == null) throw new ArgumentNullException(nameof(logEvent));
 
-            var telemetry = new EventTelemetry(logEvent.MessageTemplate.Text)
-            {
-                Timestamp = logEvent.Timestamp
-            };
+            var telemetry = new EventTelemetry(logEvent.MessageTemplate.Text) { Timestamp = logEvent.Timestamp };
 
             // write logEvent's .Properties to the AI one
-            logEvent.ForwardPropertiesToTelemetryProperties(telemetry, formatProvider, includeLogLevelAsProperty, includeRenderedMessageAsProperty,
-                                                            includeMessageTemplateAsProperty);
+            logEvent.ForwardPropertiesToTelemetryProperties(
+                telemetry,
+                formatProvider,
+                includeLogLevelAsProperty,
+                includeRenderedMessageAsProperty,
+                includeMessageTemplateAsProperty);
 
             return telemetry;
         }
@@ -192,15 +192,15 @@ namespace Serilog.ExtensionMethods
 
             string renderedMessage = logEvent.RenderMessage(formatProvider);
 
-            var telemetry = new TraceTelemetry(renderedMessage)
-            {
-                Timestamp = logEvent.Timestamp,
-                SeverityLevel = logEvent.Level.ToSeverityLevel()
-            };
+            var telemetry = new TraceTelemetry(renderedMessage) { Timestamp = logEvent.Timestamp, SeverityLevel = logEvent.Level.ToSeverityLevel() };
 
             // write logEvent's .Properties to the AI one
-            logEvent.ForwardPropertiesToTelemetryProperties(telemetry, formatProvider, includeLogLevelAsProperty, includeRenderedMessageAsProperty,
-                                                            includeMessageTemplateAsProperty);
+            logEvent.ForwardPropertiesToTelemetryProperties(
+                telemetry,
+                formatProvider,
+                includeLogLevelAsProperty,
+                includeRenderedMessageAsProperty,
+                includeMessageTemplateAsProperty);
 
             return telemetry;
         }

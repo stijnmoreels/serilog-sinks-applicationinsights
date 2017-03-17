@@ -74,4 +74,3 @@ namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
         }
     }
 }
-

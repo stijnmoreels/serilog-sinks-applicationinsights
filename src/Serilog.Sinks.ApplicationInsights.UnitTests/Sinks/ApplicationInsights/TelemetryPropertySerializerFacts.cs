@@ -17,8 +17,10 @@ namespace Serilog.Sinks.ApplicationInsights.UnitTests.Sinks.ApplicationInsights
         {
             // Arrange
             var serializer = new TelemetryPropertyDeserializer();
+
             // Act
             TelemetryProperty actualProperty = serializer.Deserialize(new ScalarValue(expectedProperty));
+
             // Assert
             Assert.IsType(expectedProperty.GetType(), actualProperty);
         }

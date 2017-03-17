@@ -21,7 +21,6 @@ using Serilog.Events;
 using Serilog.ExtensionMethods;
 
 // ReSharper disable once CheckNamespace
-
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -30,13 +29,14 @@ namespace Serilog.Sinks.ApplicationInsights
     public class ApplicationInsightsTracesSink : ApplicationInsightsSinkBase
     {
         /// <summary>
-        /// Creates a sink that saves logs as Traces to the Application Insights account for the given <paramref name="telemetryClient" /> instance.
+        /// Initializes a new instance of the <see cref="ApplicationInsightsTracesSink"/> class. 
+        /// Creates a sink that saves logs as Traces to the Application Insights account for the given <paramref name="telemetryClient"/> instance.
         /// </summary>
-        /// <param name="telemetryClient">Required Application Insights <paramref name="telemetryClient" />.</param>
+        /// <param name="telemetryClient">Required Application Insights <paramref name="telemetryClient"/>.</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null for default provider.</param>
-        /// <param name="logEventToTelemetryConverter">The <see cref="LogEvent" /> to <see cref="ITelemetry" /> converter.</param>
+        /// <param name="logEventToTelemetryConverter">The <see cref="LogEvent"/> to <see cref="ITelemetry"/> converter.</param>
         /// <exception cref="System.ArgumentNullException">telemetryClient</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="telemetryClient" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException">When the <paramref name="telemetryClient"/> is null.</exception>
         public ApplicationInsightsTracesSink(
             TelemetryClient telemetryClient,
             IFormatProvider formatProvider = null,
@@ -64,6 +64,7 @@ namespace Serilog.Sinks.ApplicationInsights
             {
                 yield return logEvent.ToDefaultTraceTelemetry(formatProvider);
             }
+
             yield return logEvent.ToDefaultExceptionTelemetry(formatProvider);
         }
     }

@@ -5,14 +5,12 @@ using Serilog.Debugging;
 using Serilog.Events;
 
 // ReSharper disable once CheckNamespace
-
 namespace Serilog.Sinks.ApplicationInsights
 {
     internal static class ApplicationInsightsPropertyFormatter
     {
-        private static readonly IDictionary<Type, Action<string, object, IDictionary<string, string>>> LiteralWriters = new Dictionary
-            <Type, Action<string, object, IDictionary<string, string>>>
-            {
+        private static readonly IDictionary<Type, Action<string, object, IDictionary<string, string>>> LiteralWriters =
+            new Dictionary<Type, Action<string, object, IDictionary<string, string>>> {
                 {typeof(SequenceValue), (k, v, p) => WriteSequenceValue(k, (SequenceValue) v, p)},
                 {typeof(DictionaryValue), (k, v, p) => WriteDictionaryValue(k, (DictionaryValue) v, p)},
                 {typeof(StructureValue), (k, v, p) => WriteStructureValue(k, (StructureValue) v, p)},
@@ -47,6 +45,7 @@ namespace Serilog.Sinks.ApplicationInsights
                 WriteValue(key + "." + index, eventProperty, properties);
                 index++;
             }
+
             AppendProperty(properties, key + ".Count", index.ToString());
         }
 
@@ -58,6 +57,7 @@ namespace Serilog.Sinks.ApplicationInsights
                 AppendProperty(properties, key, value?.ToString());
                 return;
             }
+
             writer(key, value, properties);
         }
 
@@ -68,6 +68,7 @@ namespace Serilog.Sinks.ApplicationInsights
                 SelfLog.WriteLine("The key {0} is not unique after simplification. Ingoring new value {1}", key, value);
                 return;
             }
+
             propDictionary.Add(key, value);
         }
     }

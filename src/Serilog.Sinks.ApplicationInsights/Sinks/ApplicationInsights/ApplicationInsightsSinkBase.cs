@@ -23,7 +23,6 @@ using Serilog.Core;
 using Serilog.Events;
 
 // ReSharper disable once CheckNamespace
-
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -32,12 +31,15 @@ namespace Serilog.Sinks.ApplicationInsights
     /// </summary>
     public abstract class ApplicationInsightsSinkBase : ILogEventSink, IDisposable
     {
-        private long _isDisposing;
-        private long _isDisposed;
-
         private readonly TelemetryClient _telemetryClient;
+
         private readonly IFormatProvider _formatProvider;
+
         private readonly Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> _logEventToTelemetryConverter;
+
+        private long _isDisposing;
+
+        private long _isDisposed;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is being disposed.
@@ -47,20 +49,34 @@ namespace Serilog.Sinks.ApplicationInsights
         /// </value>
         public bool IsDisposing
         {
-            get { return Interlocked.Read(ref _isDisposing) == 1; }
-            protected set { Interlocked.Exchange(ref _isDisposing, value ? 1 : 0); }
+            get
+            {
+                return Interlocked.Read(ref _isDisposing) == 1;
+            }
+
+            protected set
+            {
+                Interlocked.Exchange(ref _isDisposing, value ? 1 : 0);
+            }
         }
 
         /// <summary>
-        /// Gets a value indicating whether this instance has been disposed.
+        /// Gets or sets a value indicating whether this instance has been disposed.
         /// </summary>
         /// <value>
         /// <c>true</c> if this instance has been disposed; otherwise, <c>false</c>.
         /// </value>
         public bool IsDisposed
         {
-            get { return Interlocked.Read(ref _isDisposed) == 1; }
-            protected set { Interlocked.Exchange(ref _isDisposed, value ? 1 : 0); }
+            get
+            {
+                return Interlocked.Read(ref _isDisposed) == 1;
+            }
+
+            protected set
+            {
+                Interlocked.Exchange(ref _isDisposed, value ? 1 : 0);
+            }
         }
 
         /// <summary>
@@ -96,7 +112,7 @@ namespace Serilog.Sinks.ApplicationInsights
         }
 
         /// <summary>
-        /// Holds the actual Application Insights TelemetryClient that will be used for logging.
+        /// Gets the actual Application Insights TelemetryClient that will be used for logging.
         /// </summary>
         public TelemetryClient TelemetryClient
         {
@@ -109,12 +125,13 @@ namespace Serilog.Sinks.ApplicationInsights
         }
 
         /// <summary>
-        /// Creates a sink that saves logs to the Application Insights account for the given <paramref name="telemetryClient" /> instance.
+        /// Initializes a new instance of the <see cref="ApplicationInsightsSinkBase"/> class. 
+        /// Creates a sink that saves logs to the Application Insights account for the given <paramref name="telemetryClient"/> instance.
         /// </summary>
-        /// <param name="telemetryClient">Required Application Insights <paramref name="telemetryClient" />.</param>
-        /// <param name="logEventToTelemetryConverter">The <see cref="LogEvent"/> to <see cref="ITelemetry"/> converter.</param>
-        /// <param name="formatProvider">Supplies culture-specific formatting information, or null for default provider.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="telemetryClient" /> cannot be null</exception>
+        /// <param name="telemetryClient"> Required Application Insights <paramref name="telemetryClient"/>. </param>
+        /// <param name="logEventToTelemetryConverter"> The <see cref="LogEvent"/> to <see cref="ITelemetry"/> converter. </param>
+        /// <param name="formatProvider"> Supplies culture-specific formatting information, or null for default provider.</param>
+        /// <exception cref="ArgumentNullException"> <paramref name="telemetryClient"/> cannot be null</exception>
         protected ApplicationInsightsSinkBase(
             TelemetryClient telemetryClient,
             Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter,
@@ -134,7 +151,7 @@ namespace Serilog.Sinks.ApplicationInsights
         /// Hands over the <paramref name="telemetry" /> to the AI telemetry client.
         /// </summary>
         /// <param name="telemetry">The telemetry.</param>
-        /// <exception cref="System.ArgumentNullException">telemetry</exception>
+        /// <exception cref="ArgumentNullException">When the <paramref name="telemetry"/> is null.</exception>
         protected virtual void TrackTelemetry(ITelemetry telemetry)
         {
             if (telemetry == null) throw new ArgumentNullException(nameof(telemetry));
@@ -220,8 +237,7 @@ namespace Serilog.Sinks.ApplicationInsights
         /// <param name="disposeManagedResources"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposeManagedResources)
         {
-            if (IsDisposing || IsDisposed)
-                return;
+            if (IsDisposing || IsDisposed) return;
 
             try
             {
@@ -229,6 +245,7 @@ namespace Serilog.Sinks.ApplicationInsights
 
                 // we only have managed resources to dispose of
                 if (!disposeManagedResources) return;
+
                 // free managed resources
                 TelemetryClient?.Flush();
 
@@ -237,7 +254,6 @@ namespace Serilog.Sinks.ApplicationInsights
             finally
             {
                 // but the flags need to be set in either case
-
                 IsDisposed = true;
                 IsDisposing = false;
             }

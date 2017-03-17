@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 using System;
 using System.Collections.Generic;
 using Microsoft.ApplicationInsights;
@@ -20,7 +19,6 @@ using Microsoft.ApplicationInsights.Channel;
 using Serilog.Events;
 
 // ReSharper disable once CheckNamespace
-
 namespace Serilog.Sinks.ApplicationInsights
 {
     /// <summary>
@@ -29,13 +27,14 @@ namespace Serilog.Sinks.ApplicationInsights
     public class ApplicationInsightsSink : ApplicationInsightsSinkBase
     {
         /// <summary>
-        /// Creates a sink that saves logs as <see cref="ITelemetry"/> to the Application Insights account for the given <paramref name="telemetryClient" /> instance.
+        /// Initializes a new instance of the <see cref="ApplicationInsightsSink"/> class. 
+        /// Creates a sink that saves logs as <see cref="ITelemetry"/> to the Application Insights account for the given <paramref name="telemetryClient"/> instance.
         /// </summary>
-        /// <param name="telemetryClient">Required Application Insights <paramref name="telemetryClient" />.</param>
-        /// <param name="formatProvider">Supplies culture-specific formatting information, or null for default provider.</param>
-        /// <param name="logEventToTelemetryConverter">The <see cref="LogEvent" /> to <see cref="ITelemetry" /> converter.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="telemetryClient" /> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="logEventToTelemetryConverter" /> is <see langword="null" />.</exception>
+        /// <param name="telemetryClient"> Required Application Insights <paramref name="telemetryClient"/>. </param>
+        /// <param name="logEventToTelemetryConverter"> The <see cref="LogEvent"/> to <see cref="ITelemetry"/> converter. </param>
+        /// <param name="formatProvider"> Supplies culture-specific formatting information, or null for default provider. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="telemetryClient"/> is <see langword="null"/>. </exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="logEventToTelemetryConverter"/> is <see langword="null"/>. </exception>
         public ApplicationInsightsSink(
             TelemetryClient telemetryClient,
             Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter,

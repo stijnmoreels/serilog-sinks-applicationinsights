@@ -35,11 +35,11 @@ namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights
         }
 
         /// <summary>
-        /// Creates a sink that saves logs to the Application Insights account for the given <paramref name="telemetryClient" /> instance.
-        /// </summary>
-        /// <param name="telemetryClient">Required Application Insights <paramref name="telemetryClient" />.</param>
+        /// Initializes a new instance of the <see cref="DynamicApplicationInsightsSink"/> class. 
+        /// Creates a sink that saves logs to the Application Insights account for the given <paramref name="telemetryClient"/> instance.</summary>
+        /// <param name="telemetryClient">Required Application Insights <paramref name="telemetryClient"/>.</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null for default provider.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="telemetryClient" /> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="telemetryClient"/> cannot be null</exception>
         public DynamicApplicationInsightsSink(
             TelemetryClient telemetryClient,
             IFormatProvider formatProvider = null)

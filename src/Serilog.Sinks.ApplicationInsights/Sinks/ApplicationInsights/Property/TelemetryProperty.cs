@@ -40,10 +40,11 @@ namespace Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.Property
         public override string ToString()
         {
             string output = JsonConvert.SerializeObject(this);
-            JObject jObject = JObject.Parse(output);
-            jObject.Add(Key, value: this.GetType().FullName);
 
-            return jObject.ToString();
+            JObject tempJObject = JObject.Parse(output);
+            tempJObject.Add(Key, value: this.GetType().FullName);
+
+            return tempJObject.ToString();
         }
     }
 }

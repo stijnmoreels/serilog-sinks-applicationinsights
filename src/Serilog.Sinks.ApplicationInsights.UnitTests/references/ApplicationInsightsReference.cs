@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Linq;
 
-namespace Serilog.Sinks.ApplicationInsights.UnitTests.references
+namespace Serilog.Sinks.ApplicationInsights.UnitTests.References
 {
     /// <summary>
     /// Application Insights specifics read from the 'applicationinsights.config' file.
