@@ -87,6 +87,32 @@ private static ITelemetry ConvertLogEventsToCustomTraceTelemetry(LogEvent logEve
 
 If you want to skip sending a particular LogEvent, just return `null` from your own converter method.
 
+### Dynamic Telemetry Properties
+
+The package also supports dynamic telemetry by sending a Log Property with the log method.
+Each property send with the log method is mapped with a **Telemetry Method**.
+
+|Telemetry Property  |Telemetry Method                     |
+|--------------------|-------------------------------------|
+|`EventProperty`     |`TelemetryClient.TrackEvent()`       |
+|`TraceProperty`     |`TelemetryClient.TrackTrace()`       |
+|`RequestProperty`   |`TelemetryClient.TrackRequest()`     |
+|`MetricProperty`    |`TelemetryClient.TrackMetric()`      |
+|`DependencyProperty`|`TelemetryClient.TrackDependency()`  |
+
+If you want to track a **Metric** you can do the following for example:
+
+```csharp
+var metric = new MetricProperty("my metric", metricValue: 10);
+Log.Logger.Information("My custom message with Metric {metric}", metric);
+```
+
+Which is the alternative for:
+
+```csharp
+var metric = new MetricTelemetry("my metric", metricValue: 10);
+TelemetryClient.TrackMetric(metric);
+```
 
 ## How, When and Why to Flush Messages Manually
 

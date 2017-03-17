@@ -30,6 +30,7 @@ namespace Serilog.Sinks.ApplicationInsights.UnitTests.Sinks.ApplicationInsights
             yield return new object[] {new EventProperty(), typeof(EventTelemetry)};
             yield return new object[] {new MetricProperty(), typeof(MetricTelemetry)};
             yield return new object[] {new RequestProperty {StartTime = DateTime.UtcNow}, typeof(RequestTelemetry)};
+            yield return new object[] {new TraceProperty(), typeof(TraceTelemetry)};
         }
     }
 }
