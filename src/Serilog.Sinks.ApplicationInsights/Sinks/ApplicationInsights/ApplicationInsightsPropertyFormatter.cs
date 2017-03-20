@@ -10,7 +10,8 @@ namespace Serilog.Sinks.ApplicationInsights
     internal static class ApplicationInsightsPropertyFormatter
     {
         private static readonly IDictionary<Type, Action<string, object, IDictionary<string, string>>> LiteralWriters =
-            new Dictionary<Type, Action<string, object, IDictionary<string, string>>> {
+            new Dictionary<Type, Action<string, object, IDictionary<string, string>>>
+            {
                 {typeof(SequenceValue), (k, v, p) => WriteSequenceValue(k, (SequenceValue) v, p)},
                 {typeof(DictionaryValue), (k, v, p) => WriteDictionaryValue(k, (DictionaryValue) v, p)},
                 {typeof(StructureValue), (k, v, p) => WriteStructureValue(k, (StructureValue) v, p)},

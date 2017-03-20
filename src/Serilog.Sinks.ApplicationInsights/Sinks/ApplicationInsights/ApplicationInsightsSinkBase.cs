@@ -31,15 +31,33 @@ namespace Serilog.Sinks.ApplicationInsights
     /// </summary>
     public abstract class ApplicationInsightsSinkBase : ILogEventSink, IDisposable
     {
+        private readonly IFormatProvider _formatProvider;
+        private readonly Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> _logEventToTelemetryConverter;
         private readonly TelemetryClient _telemetryClient;
 
-        private readonly IFormatProvider _formatProvider;
-
-        private readonly Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> _logEventToTelemetryConverter;
-
+        private long _isDisposed;
         private long _isDisposing;
 
-        private long _isDisposed;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationInsightsSinkBase"/> class. 
+        /// Creates a sink that saves logs to the Application Insights account for the given <paramref name="telemetryClient"/> instance.
+        /// </summary>
+        /// <param name="telemetryClient"> Required Application Insights <paramref name="telemetryClient"/>. </param>
+        /// <param name="logEventToTelemetryConverter"> The <see cref="LogEvent"/> to <see cref="ITelemetry"/> converter. </param>
+        /// <param name="formatProvider"> Supplies culture-specific formatting information, or null for default provider.</param>
+        /// <exception cref="ArgumentNullException"> <paramref name="telemetryClient"/> cannot be null</exception>
+        protected ApplicationInsightsSinkBase(
+            TelemetryClient telemetryClient,
+            Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter,
+            IFormatProvider formatProvider = null)
+        {
+            if (telemetryClient == null) throw new ArgumentNullException(nameof(telemetryClient));
+            if (logEventToTelemetryConverter == null) throw new ArgumentNullException(nameof(logEventToTelemetryConverter));
+
+            _telemetryClient = telemetryClient;
+            _formatProvider = formatProvider;
+            _logEventToTelemetryConverter = logEventToTelemetryConverter;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is being disposed.
@@ -49,15 +67,9 @@ namespace Serilog.Sinks.ApplicationInsights
         /// </value>
         public bool IsDisposing
         {
-            get
-            {
-                return Interlocked.Read(ref _isDisposing) == 1;
-            }
+            get { return Interlocked.Read(ref _isDisposing) == 1; }
 
-            protected set
-            {
-                Interlocked.Exchange(ref _isDisposing, value ? 1 : 0);
-            }
+            protected set { Interlocked.Exchange(ref _isDisposing, value ? 1 : 0); }
         }
 
         /// <summary>
@@ -68,15 +80,9 @@ namespace Serilog.Sinks.ApplicationInsights
         /// </value>
         public bool IsDisposed
         {
-            get
-            {
-                return Interlocked.Read(ref _isDisposed) == 1;
-            }
+            get { return Interlocked.Read(ref _isDisposed) == 1; }
 
-            protected set
-            {
-                Interlocked.Exchange(ref _isDisposed, value ? 1 : 0);
-            }
+            protected set { Interlocked.Exchange(ref _isDisposed, value ? 1 : 0); }
         }
 
         /// <summary>
@@ -124,47 +130,6 @@ namespace Serilog.Sinks.ApplicationInsights
             }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationInsightsSinkBase"/> class. 
-        /// Creates a sink that saves logs to the Application Insights account for the given <paramref name="telemetryClient"/> instance.
-        /// </summary>
-        /// <param name="telemetryClient"> Required Application Insights <paramref name="telemetryClient"/>. </param>
-        /// <param name="logEventToTelemetryConverter"> The <see cref="LogEvent"/> to <see cref="ITelemetry"/> converter. </param>
-        /// <param name="formatProvider"> Supplies culture-specific formatting information, or null for default provider.</param>
-        /// <exception cref="ArgumentNullException"> <paramref name="telemetryClient"/> cannot be null</exception>
-        protected ApplicationInsightsSinkBase(
-            TelemetryClient telemetryClient,
-            Func<LogEvent, IFormatProvider, IEnumerable<ITelemetry>> logEventToTelemetryConverter,
-            IFormatProvider formatProvider = null)
-        {
-            if (telemetryClient == null) throw new ArgumentNullException(nameof(telemetryClient));
-            if (logEventToTelemetryConverter == null) throw new ArgumentNullException(nameof(logEventToTelemetryConverter));
-
-            _telemetryClient = telemetryClient;
-            _formatProvider = formatProvider;
-            _logEventToTelemetryConverter = logEventToTelemetryConverter;
-        }
-
-        #region AI specifc Helper methods
-
-        /// <summary>
-        /// Hands over the <paramref name="telemetry" /> to the AI telemetry client.
-        /// </summary>
-        /// <param name="telemetry">The telemetry.</param>
-        /// <exception cref="ArgumentNullException">When the <paramref name="telemetry"/> is null.</exception>
-        protected virtual void TrackTelemetry(ITelemetry telemetry)
-        {
-            if (telemetry == null) throw new ArgumentNullException(nameof(telemetry));
-
-            CheckForAndThrowIfDisposed();
-
-            // the .Track() method is save to use (even though documented otherwise)
-            // see https://github.com/Microsoft/ApplicationInsights-dotnet/issues/244
-            TelemetryClient.Track(telemetry);
-        }
-
-        #endregion AI specifc Helper methods
-
         #region Implementation of ILogEventSink
 
         /// <summary>
@@ -208,12 +173,32 @@ namespace Serilog.Sinks.ApplicationInsights
 
         #endregion
 
+        #region AI specifc Helper methods
+
+        /// <summary>
+        /// Hands over the <paramref name="telemetry" /> to the AI telemetry client.
+        /// </summary>
+        /// <param name="telemetry">The telemetry.</param>
+        /// <exception cref="ArgumentNullException">When the <paramref name="telemetry"/> is null.</exception>
+        protected virtual void TrackTelemetry(ITelemetry telemetry)
+        {
+            if (telemetry == null) throw new ArgumentNullException(nameof(telemetry));
+
+            CheckForAndThrowIfDisposed();
+
+            // the .Track() method is save to use (even though documented otherwise)
+            // see https://github.com/Microsoft/ApplicationInsights-dotnet/issues/244
+            TelemetryClient.Track(telemetry);
+        }
+
+        #endregion AI specifc Helper methods
+
         #region Implementation of IDisposable
 
         /// <summary>
         /// Checks whether this instance has been disposed and if so, throws an <see cref="ObjectDisposedException"/>.
         /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="ObjectDisposedException">When object is disposed.</exception>
         protected void CheckForAndThrowIfDisposed()
         {
             if (IsDisposed)
